@@ -74,15 +74,6 @@ func main() {
 			range_start, range_end int64
 			capturing              bool
 
-			final_output = func() {
-				if capturing {
-					if range_start == range_end {
-						fmt.Print(strconv.FormatInt(range_start, 10), "\n")
-					} else {
-						fmt.Print(strconv.FormatInt(range_start, 10), "-", strconv.FormatInt(range_end, 10), "\n")
-					}
-				}
-			}
 			c    = make(chan os.Signal, 1)
 			done = make(chan struct{})
 		)
@@ -90,7 +81,14 @@ func main() {
 		signal.Notify(c, os.Interrupt)
 		go func() {
 			<-c // falls through on close
-			final_output()
+			// final output
+			if capturing {
+				if range_start == range_end {
+					fmt.Print(strconv.FormatInt(range_start, 10), "\n")
+				} else {
+					fmt.Print(strconv.FormatInt(range_start, 10), "-", strconv.FormatInt(range_end, 10), "\n")
+				}
+			}
 			done <- struct{}{}
 		}()
 
