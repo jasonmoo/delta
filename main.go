@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 var (
@@ -73,23 +74,28 @@ func main() {
 		var (
 			range_start, range_end int64
 			capturing              bool
+			once                   sync.Once
 
-			c    = make(chan os.Signal, 1)
-			done = make(chan struct{})
+			c            = make(chan os.Signal, 1)
+			final_output = func() {
+				// final output
+				if capturing {
+					if range_start == range_end {
+						fmt.Print(strconv.FormatInt(range_start, 10), "\n")
+					} else {
+						fmt.Print(strconv.FormatInt(range_start, 10), "-", strconv.FormatInt(range_end, 10), "\n")
+					}
+				}
+			}
 		)
 
 		signal.Notify(c, os.Interrupt)
 		go func() {
-			<-c // falls through on close
-			// final output
-			if capturing {
-				if range_start == range_end {
-					fmt.Print(strconv.FormatInt(range_start, 10), "\n")
-				} else {
-					fmt.Print(strconv.FormatInt(range_start, 10), "-", strconv.FormatInt(range_end, 10), "\n")
-				}
-			}
-			done <- struct{}{}
+			<-c
+			// either final_output is called
+			// during sig event or it is called
+			// during normal program flow
+			once.Do(final_output)
 		}()
 
 		for s.Scan() {
@@ -118,8 +124,7 @@ func main() {
 
 		}
 
-		close(c)
-		<-done
+		once.Do(final_output)
 
 	}
 
