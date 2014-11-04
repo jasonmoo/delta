@@ -56,7 +56,7 @@ func main() {
 				log.Println(err)
 				continue
 			}
-			end, err := strconv.ParseInt(matches[2], 0, 64)
+			end, err := strconv.ParseInt(matches[2], 10, 64)
 			if err != nil {
 				log.Println(err)
 				continue
