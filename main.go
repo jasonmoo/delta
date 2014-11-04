@@ -76,9 +76,8 @@ func main() {
 			capturing              bool
 			once                   sync.Once
 
-			c            = make(chan os.Signal, 1)
+			sig          = make(chan os.Signal, 1)
 			final_output = func() {
-				// final output
 				if capturing {
 					if range_start == range_end {
 						fmt.Print(strconv.FormatInt(range_start, 10), "\n")
@@ -89,9 +88,9 @@ func main() {
 			}
 		)
 
-		signal.Notify(c, os.Interrupt)
+		signal.Notify(sig, os.Interrupt)
 		go func() {
-			<-c
+			<-sig
 			// either final_output is called
 			// during sig event or it is called
 			// during normal program flow
