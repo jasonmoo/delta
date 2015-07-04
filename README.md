@@ -1,6 +1,13 @@
 #delta
 
-a simple delta encoder/decoder for simple integer ranges
+a delta encoder/decoder for integer ranges.  Reads writes from/to STDIN/STDOUT
+
+####Usage:
+  -d=false: compress the range supplied
+
+
+###Example
+    jason@mbp ~: go get github.com/jasonmoo/delta
 
 	jason@mbp ~: seq 1 10
 	1
@@ -28,3 +35,6 @@ a simple delta encoder/decoder for simple integer ranges
 	8
 	9
 	10
+
+[LICENSE](https://raw.githubusercontent.com/jasonmoo/delta/master/LICENSE)
+
