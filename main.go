@@ -80,11 +80,12 @@ func main() {
 			final_output = func() {
 				if capturing {
 					if range_start == range_end {
-						fmt.Print(strconv.FormatInt(range_start, 10), "\n")
+						fmt.Print(strconv.FormatInt(range_start, 10))
 					} else {
-						fmt.Print(strconv.FormatInt(range_start, 10), "-", strconv.FormatInt(range_end, 10), "\n")
+						fmt.Print(strconv.FormatInt(range_start, 10), "-", strconv.FormatInt(range_end, 10))
 					}
 				}
+				fmt.Print("\n")
 			}
 		)
 
@@ -94,14 +95,16 @@ func main() {
 			// either final_output is called
 			// during sig event or it is called
 			// during normal program flow
+			fmt.Print("\n")
 			once.Do(final_output)
+			os.Exit(0)
 		}()
 
 		for s.Scan() {
 
 			val, err := strconv.ParseInt(strings.TrimSpace(s.Text()), 0, 64)
 			if err != nil {
-				fmt.Print(s.Bytes(), "\n")
+				fmt.Println(s.Text())
 				break
 			}
 
